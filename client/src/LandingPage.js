@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './LandingPage.css';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const LandingPage = () => {
 
   return (
     <div ref={vantaRef} className="landing-page">
-      <div className="heading">Innovest</div>
+      <div className="heading bubble-text">Innovest</div>
       <div className="subheading">Get real-time insights into your stock market investments!</div>
       <div className="button-container">
         <button className="button" onClick={() => navigate('/home')}>Get started</button>
