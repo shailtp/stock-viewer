@@ -11,7 +11,6 @@ const StockDetail = ({ match }) => {
     const fetchStockData = async () => {
       const response = await axios.get(`http://localhost:5001/api/stocks?symbol=${symbol}`);
       setStockData(response.data);
-      // Fetch additional stock info
       const infoResponse = await axios.get(`http://localhost:5001/api/stock-info?symbol=${symbol}`);
       setStockInfo(infoResponse.data);
     };

@@ -12,7 +12,6 @@ const HomePage = () => {
     }
   };
 
-  console.log('HomePage rendered');
   return (
     <div>
       <header>
