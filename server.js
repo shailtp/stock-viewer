@@ -9,15 +9,18 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-// Example endpoint to fetch stock data from Alpha Vantage
+const API_KEY = 'OW4D70D1ABXY1EXP';
+
+// Endpoint to fetch stock data
 app.get('/api/stocks', async (req, res) => {
+    const symbol = req.query.symbol || 'AAPL';
     try {
         const response = await axios.get('https://www.alphavantage.co/query', {
             params: {
                 function: 'TIME_SERIES_INTRADAY',
-                symbol: 'AAPL',
+                symbol: symbol,
                 interval: '1min',
-                apikey: 'OW4D70D1ABXY1EXP' // Your Alpha Vantage API key
+                apikey: OW4D70D1ABXY1EXP
             }
         });
         const data = response.data['Time Series (1min)'];
@@ -28,6 +31,23 @@ app.get('/api/stocks', async (req, res) => {
         res.json(formattedData);
     } catch (error) {
         res.status(500).send('Error fetching stock data');
+    }
+});
+
+// Endpoint to fetch stock info
+app.get('/api/stock-info', async (req, res) => {
+    const symbol = req.query.symbol || 'AAPL';
+    try {
+        const response = await axios.get('https://www.alphavantage.co/query', {
+            params: {
+                function: 'OVERVIEW',
+                symbol: symbol,
+                apikey: OW4D70D1ABXY1EXP
+            }
+        });
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).send('Error fetching stock info');
     }
 });
 
