@@ -5,7 +5,6 @@ import HomePage from './HomePage';
 import StockDetail from './StockDetail';
 
 const App = () => {
-  console.log('App rendered');
   return (
     <Router>
       <Routes>
