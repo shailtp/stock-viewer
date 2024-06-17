@@ -51,6 +51,30 @@ app.get('/api/stock-info', async (req, res) => {
     }
 });
 
+app.get('/api/top-performers', async (req, res) => {
+    // Mock data - replace with actual data fetching logic
+    const topPerformers = [
+      { name: 'Stock A', priceChange: 10 },
+      { name: 'Stock B', priceChange: 8 },
+      { name: 'Stock C', priceChange: 7 },
+      { name: 'Stock D', priceChange: 6 },
+      { name: 'Stock E', priceChange: 5 },
+    ];
+    res.json(topPerformers);
+  });
+  
+  app.get('/api/biggest-market-cap', async (req, res) => {
+    // Mock data - replace with actual data fetching logic
+    const biggestMarketCap = [
+      { name: 'Stock X', marketCap: 1000 },
+      { name: 'Stock Y', marketCap: 800 },
+      { name: 'Stock Z', marketCap: 700 },
+      { name: 'Stock W', marketCap: 600 },
+      { name: 'Stock V', marketCap: 500 },
+    ];
+    res.json(biggestMarketCap);
+  });
+  
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
