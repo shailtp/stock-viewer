@@ -12,14 +12,22 @@ const HomePage = () => {
   useEffect(() => {
     // Fetch top performers
     const fetchTopPerformers = async () => {
-      const response = await axios.get('http://localhost:5001/api/top-performers');
-      setTopPerformers(response.data);
+      try {
+        const response = await axios.get('http://localhost:5001/api/top-performers');
+        setTopPerformers(response.data);
+      } catch (error) {
+        console.error('Error fetching top performers:', error);
+      }
     };
 
     // Fetch biggest market cap
     const fetchBiggestMarketCap = async () => {
-      const response = await axios.get('http://localhost:5001/api/biggest-market-cap');
-      setBiggestMarketCap(response.data);
+      try {
+        const response = await axios.get('http://localhost:5001/api/biggest-market-cap');
+        setBiggestMarketCap(response.data);
+      } catch (error) {
+        console.error('Error fetching biggest market cap:', error);
+      }
     };
 
     fetchTopPerformers();
@@ -34,7 +42,7 @@ const HomePage = () => {
   };
 
   return (
-    <div>
+    <div className="homepage">
       <header>
         <form onSubmit={handleSearch}>
           <input
@@ -42,8 +50,9 @@ const HomePage = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search for a stock..."
+            className="search-bar"
           />
-          <button type="submit">Search</button>
+          <button type="submit" className="search-button">Search</button>
         </form>
       </header>
       <section className="top-performers">

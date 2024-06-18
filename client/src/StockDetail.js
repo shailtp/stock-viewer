@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Line } from 'react-chartjs-2';
+import * as d3 from 'd3';
+import './StockDetail.css';
+import { useParams } from 'react-router-dom';
 
-const StockDetail = ({ match }) => {
-  const { symbol } = match.params;
+const StockDetail = () => {
+  const { symbol } = useParams();
   const [stockData, setStockData] = useState([]);
   const [stockInfo, setStockInfo] = useState({});
 
@@ -18,23 +20,49 @@ const StockDetail = ({ match }) => {
     fetchStockData();
   }, [symbol]);
 
-  const data = {
-    labels: stockData.map(stock => new Date(stock.timestamp).toLocaleTimeString()),
-    datasets: [
-      {
-        label: 'Stock Price',
-        data: stockData.map(stock => stock.price),
-        fill: false,
-        backgroundColor: 'rgb(75, 192, 192)',
-        borderColor: 'rgba(75, 192, 192, 0.2)',
-      },
-    ],
-  };
+  useEffect(() => {
+    if (stockData.length > 0) {
+      const svg = d3.select("#chart");
+      svg.selectAll("*").remove();
+
+      const width = parseInt(svg.style("width"));
+      const height = parseInt(svg.style("height"));
+      const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+
+      const x = d3.scaleTime()
+        .domain(d3.extent(stockData, d => new Date(d.timestamp)))
+        .range([margin.left, width - margin.right]);
+
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(stockData, d => d.close)]).nice()
+        .range([height - margin.bottom, margin.top]);
+
+      const line = d3.line()
+        .x(d => x(new Date(d.timestamp)))
+        .y(d => y(d.close))
+        .curve(d3.curveLinear);
+
+      svg.append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y-%m-%d")));
+
+      svg.append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y));
+
+      svg.append("path")
+        .datum(stockData)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("d", line);
+    }
+  }, [stockData]);
 
   return (
     <div>
       <h1>{symbol} Stock Details</h1>
-      <Line data={data} />
+      <svg id="chart"></svg>
       <div>
         <h2>Stock Information</h2>
         <p>Open: {stockInfo.open}</p>
