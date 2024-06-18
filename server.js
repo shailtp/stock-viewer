@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-const API_KEY = 'TOB5L935J6VGQAO8';
+const API_KEY = 'XXKMVP3YL87DTLPE';
 
 // Endpoint to fetch stock data
 app.get('/api/stocks', async (req, res) => {
@@ -21,7 +21,19 @@ app.get('/api/stocks', async (req, res) => {
                 apikey: API_KEY
             }
         });
+        
+        if (response.data['Error Message']) {
+            console.error('Error fetching stock data:', response.data['Error Message']);
+            return res.status(500).send('Error fetching stock data');
+        }
+        
         const data = response.data['Time Series (Daily)'];
+        if (!data) {
+            console.error('No data returned for symbol:', symbol);
+            console.error('Response received:', response.data);
+            return res.status(500).send('No data returned');
+        }
+        
         const formattedData = Object.keys(data).map(key => ({
             timestamp: key,
             open: parseFloat(data[key]['1. open']),
@@ -32,6 +44,7 @@ app.get('/api/stocks', async (req, res) => {
         }));
         res.json(formattedData);
     } catch (error) {
+        console.error('Error fetching stock data:', error.message);
         res.status(500).send('Error fetching stock data');
     }
 });
@@ -47,34 +60,41 @@ app.get('/api/stock-info', async (req, res) => {
                 apikey: API_KEY
             }
         });
+        
+        if (response.data['Error Message']) {
+            console.error('Error fetching stock info:', response.data['Error Message']);
+            return res.status(500).send('Error fetching stock info');
+        }
+        
         res.json(response.data);
     } catch (error) {
+        console.error('Error fetching stock info:', error.message);
         res.status(500).send('Error fetching stock info');
     }
 });
 
 // Endpoint to fetch top performers
 app.get('/api/top-performers', async (req, res) => {
-    // Example implementation with Alpha Vantage
+    // Mock data for now
     const topPerformers = [
-      { name: 'AAPL', priceChange: 10 },
-      { name: 'MSFT', priceChange: 8 },
-      { name: 'GOOGL', priceChange: 7 },
-      { name: 'AMZN', priceChange: 6 },
-      { name: 'TSLA', priceChange: 5 },
+        { name: 'AAPL', priceChange: 10 },
+        { name: 'MSFT', priceChange: 8 },
+        { name: 'GOOGL', priceChange: 7 },
+        { name: 'AMZN', priceChange: 6 },
+        { name: 'TSLA', priceChange: 5 }
     ];
     res.json(topPerformers);
 });
 
 // Endpoint to fetch biggest market cap
 app.get('/api/biggest-market-cap', async (req, res) => {
-    // Example implementation with Alpha Vantage
+    // Mock data for now
     const biggestMarketCap = [
-      { name: 'AAPL', marketCap: 2000 },
-      { name: 'MSFT', marketCap: 1800 },
-      { name: 'GOOGL', marketCap: 1500 },
-      { name: 'AMZN', marketCap: 1400 },
-      { name: 'TSLA', marketCap: 1000 },
+        { name: 'AAPL', marketCap: 2000 },
+        { name: 'MSFT', marketCap: 1800 },
+        { name: 'GOOGL', marketCap: 1500 },
+        { name: 'AMZN', marketCap: 1400 },
+        { name: 'TSLA', marketCap: 1000 }
     ];
     res.json(biggestMarketCap);
 });
