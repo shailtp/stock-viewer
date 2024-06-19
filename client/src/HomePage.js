@@ -6,11 +6,12 @@ import './HomePage.css';
 const HomePage = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [topPerformers, setTopPerformers] = useState([]);
   const [biggestMarketCap, setBiggestMarketCap] = useState([]);
 
   useEffect(() => {
+    // Fetch top performers
     const fetchTopPerformers = async () => {
       try {
         const response = await axios.get('http://localhost:5001/api/top-performers');
@@ -20,6 +21,7 @@ const HomePage = () => {
       }
     };
 
+    // Fetch biggest market cap
     const fetchBiggestMarketCap = async () => {
       try {
         const response = await axios.get('http://localhost:5001/api/biggest-market-cap');
@@ -33,56 +35,52 @@ const HomePage = () => {
     fetchBiggestMarketCap();
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      navigate(`/stock/${searchQuery}`);
-    }
-  };
-
-  const handleInputChange = async (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    if (query.length > 2) {
+  const handleSearch = async (e) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value) {
       try {
-        const response = await axios.get(`http://localhost:5001/api/stock-suggestions?q=${query}`);
-        setSuggestions(response.data);
+        const response = await axios.get(`http://localhost:5001/api/search-tickers?q=${e.target.value}`);
+        setSearchResults(response.data);
       } catch (error) {
-        console.error('Error fetching stock suggestions:', error);
+        console.error('Error searching tickers:', error);
+        setSearchResults([]);
       }
     } else {
-      setSuggestions([]);
+      setSearchResults([]);
     }
   };
 
-  const handleSuggestionClick = (symbol) => {
+  const handleSelectStock = (symbol) => {
     setSearchQuery(symbol);
-    setSuggestions([]);
+    setSearchResults([]);
     navigate(`/stock/${symbol}`);
   };
 
   return (
     <div className="homepage">
       <header>
-        <form onSubmit={handleSearch}>
+        <div className="search-container">
           <input
             type="text"
             value={searchQuery}
-            onChange={handleInputChange}
-            placeholder="Search for a stock..."
+            onChange={handleSearch}
+            placeholder="Search for a stock here..."
             className="search-bar"
           />
-          <button type="submit" className="search-button">Search</button>
-        </form>
-        {suggestions.length > 0 && (
-          <ul className="suggestions">
-            {suggestions.map((suggestion, index) => (
-              <li key={index} onClick={() => handleSuggestionClick(suggestion.symbol)}>
-                {suggestion.name} ({suggestion.symbol})
-              </li>
-            ))}
-          </ul>
-        )}
+          {searchQuery && (
+            <ul className="search-results">
+              {searchResults.length ? (
+                searchResults.map((stock, index) => (
+                  <li key={index} onClick={() => handleSelectStock(stock.symbol)}>
+                    <span className="search-symbol">{stock.symbol}</span> - <span className="search-name">{stock.name}</span>
+                  </li>
+                ))
+              ) : (
+                <li className="search-no-results">Stock not found</li>
+              )}
+            </ul>
+          )}
+        </div>
       </header>
       <section className="top-performers">
         <h2>Top Performers (Last 24 hours)</h2>

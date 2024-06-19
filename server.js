@@ -10,10 +10,21 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-const API_KEY = 'TOB5L935J6VGQAO8';
+const API_KEY = 'XXKMVP3YL87DTLPE';
 
-// Read the nasdaq_full_tickers.json file
-const tickerData = JSON.parse(fs.readFileSync(path.join(__dirname, 'nasdaq_full_tickers.json')));
+// Load tickers data
+const nasdaqTickers = JSON.parse(fs.readFileSync(path.join(__dirname, 'nasdaq_full_tickers.json')));
+const nyseTickers = JSON.parse(fs.readFileSync(path.join(__dirname, 'nyse_full_tickers.json')));
+const allTickers = nasdaqTickers.concat(nyseTickers);
+
+// Endpoint to search for tickers
+app.get('/api/search-tickers', (req, res) => {
+  const query = req.query.q.toLowerCase();
+  const filteredTickers = allTickers.filter(ticker =>
+    ticker.symbol.toLowerCase().includes(query) || ticker.name.toLowerCase().includes(query)
+  );
+  res.json(filteredTickers.slice(0, 100)); // Limit to top 10 results
+});
 
 // Endpoint to fetch stock data
 app.get('/api/stocks', async (req, res) => {
@@ -102,16 +113,6 @@ app.get('/api/biggest-market-cap', async (req, res) => {
     { name: 'TSLA', marketCap: 1000 }
   ];
   res.json(biggestMarketCap);
-});
-
-// Endpoint to fetch stock suggestions
-app.get('/api/stock-suggestions', (req, res) => {
-  const query = req.query.q.toLowerCase();
-  const suggestions = tickerData.filter(stock =>
-    stock.symbol.toLowerCase().includes(query) ||
-    stock.name.toLowerCase().includes(query)
-  ).slice(0, 10); // Limit results to 10
-  res.json(suggestions);
 });
 
 app.listen(PORT, () => {
