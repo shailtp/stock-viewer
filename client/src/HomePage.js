@@ -6,11 +6,11 @@ import './HomePage.css';
 const HomePage = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
   const [topPerformers, setTopPerformers] = useState([]);
   const [biggestMarketCap, setBiggestMarketCap] = useState([]);
 
   useEffect(() => {
-    // Fetch top performers
     const fetchTopPerformers = async () => {
       try {
         const response = await axios.get('http://localhost:5001/api/top-performers');
@@ -20,7 +20,6 @@ const HomePage = () => {
       }
     };
 
-    // Fetch biggest market cap
     const fetchBiggestMarketCap = async () => {
       try {
         const response = await axios.get('http://localhost:5001/api/biggest-market-cap');
@@ -41,6 +40,27 @@ const HomePage = () => {
     }
   };
 
+  const handleInputChange = async (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query.length > 2) {
+      try {
+        const response = await axios.get(`http://localhost:5001/api/stock-suggestions?q=${query}`);
+        setSuggestions(response.data);
+      } catch (error) {
+        console.error('Error fetching stock suggestions:', error);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = (symbol) => {
+    setSearchQuery(symbol);
+    setSuggestions([]);
+    navigate(`/stock/${symbol}`);
+  };
+
   return (
     <div className="homepage">
       <header>
@@ -48,12 +68,21 @@ const HomePage = () => {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleInputChange}
             placeholder="Search for a stock..."
             className="search-bar"
           />
           <button type="submit" className="search-button">Search</button>
         </form>
+        {suggestions.length > 0 && (
+          <ul className="suggestions">
+            {suggestions.map((suggestion, index) => (
+              <li key={index} onClick={() => handleSuggestionClick(suggestion.symbol)}>
+                {suggestion.name} ({suggestion.symbol})
+              </li>
+            ))}
+          </ul>
+        )}
       </header>
       <section className="top-performers">
         <h2>Top Performers (Last 24 hours)</h2>

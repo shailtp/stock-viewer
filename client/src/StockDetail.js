@@ -20,7 +20,6 @@ const StockDetail = () => {
     fetchStockData();
   }, [symbol]);
 
-  console.log("DATA");
 
   useEffect(() => {
     if (stockData.length > 0) {

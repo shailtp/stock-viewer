@@ -1,23 +1,25 @@
+/* HomePage.css */
 body {
     background-color: black;
     color: white;
     font-family: Helvetica, Arial, sans-serif;
-}
-
-header {
+  }
+  
+  header {
     margin: 20px 0;
     text-align: center;
-}
-
-.search-bar {
+    position: relative;
+  }
+  
+  .search-bar {
     width: 60%;
     padding: 10px;
     font-size: 1.2rem;
     border: none;
     border-radius: 5px;
-}
-
-.search-button {
+  }
+  
+  .search-button {
     padding: 10px 20px;
     font-size: 1.2rem;
     color: white;
@@ -26,29 +28,49 @@ header {
     border-radius: 5px;
     cursor: pointer;
     text-transform: uppercase;
-}
-
-section {
+  }
+  
+  .suggestions {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 60%;
+    left: 20%;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    z-index: 10;
+  }
+  
+  .suggestions li {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .suggestions li:hover {
+    background-color: #ddd;
+  }
+  
+  section {
     margin: 40px 20px;
     text-align: center;
-}
-
-section h2 {
+  }
+  
+  section h2 {
     margin-bottom: 20px;
     font-size: 2rem;
-}
-
-.stock-list {
+  }
+  
+  .stock-list {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-}
-
-.stock-item {
+  }
+  
+  .stock-item {
     margin: 10px;
     padding: 10px;
     width: 18%;
-    background-color: #333;
-    border-radius: 5px;
-    text-align: left;
-}
+    background-color: #333
+  }
