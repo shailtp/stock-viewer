@@ -20,6 +20,8 @@ const StockDetail = () => {
     fetchStockData();
   }, [symbol]);
 
+  console.log("DATA");
+
   useEffect(() => {
     if (stockData.length > 0) {
       const svg = d3.select("#chart");
