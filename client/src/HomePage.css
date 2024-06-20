@@ -1,86 +1,85 @@
 body {
-    background-color: black;
-    color: white;
-    font-family: Helvetica, Arial, sans-serif;
-  }
-  
-  header {
-    margin: 20px 0;
-    text-align: center;
-  }
-  
-  .search-container {
-    position: relative;
-    display: inline-block;
-    width: 60%;
-  }
-  
-  .search-bar {
-    width: 100%;
-    padding: 10px;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
-  
-  .search-results {
-    position: absolute;
-    width: 100%;
-    background-color: white;
-    color: black;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-  }
-  
-  .search-results li {
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .search-results li:hover {
-    background-color: #f0f0f0;
-  }
-  
-  .search-symbol {
-    font-weight: bold;
-    color: green;
-  }
-  
-  .search-name {
-    color: black;
-  }
-  
-  .search-no-results {
-    padding: 10px;
-    color: red;
-  }
-  
-  section {
-    margin: 40px 20px;
-    text-align: center;
-  }
-  
-  section h2 {
-    margin-bottom: 20px;
-    font-size: 2rem;
-  }
-  
-  .stock-list {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-  }
-  
-  .stock-item {
-    margin: 10px;
-    padding: 10px;
-    width: 18%;
-    background-color: #333;
-    border-radius: 5px;
-    text-align: left;
-  }
-  
+  background-color: black;
+  color: white;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+header {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+  width: 60%;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 50px; /* Circular edges */
+  box-sizing: border-box;
+}
+
+.search-results {
+  position: absolute;
+  width: 100%;
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.search-results li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-results li:hover {
+  background-color: #f0f0f0;
+}
+
+.search-symbol {
+  font-weight: bold;
+  color: green;
+}
+
+.search-name {
+  color: black;
+}
+
+.search-no-results {
+  padding: 10px;
+  color: red;
+}
+
+section {
+  margin: 40px 20px;
+  text-align: center;
+}
+
+section h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.stock-list {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.stock-item {
+  margin: 10px;
+  padding: 10px;
+  width: 18%;
+  background-color: #333;
+  border-radius: 5px;
+  text-align: left;
+}
