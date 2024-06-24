@@ -20,6 +20,7 @@ const LandingPage = () => {
       color: 0x1f1f1f,
       backgroundColor: 0x000000
     });
+    
     return () => {
       if (vantaEffect) vantaEffect.destroy();
     };
@@ -30,7 +31,7 @@ const LandingPage = () => {
       <div className="heading bubble-text">Innovest</div>
       <div className="subheading">Get real-time insights into your stock market investments!</div>
       <div className="button-container">
-        <button className="button" onClick={() => navigate('/home')}>Get started</button>
+        <button className="button" onClick={() => navigate('/home')}>Get Started</button>
       </div>
     </div>
   );
