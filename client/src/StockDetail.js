@@ -12,7 +12,7 @@ const StockDetail = () => {
   useEffect(() => {
     const fetchStockData = async () => {
       const response = await axios.get(`http://localhost:5001/api/stocks?symbol=${symbol}`);
-      setStockData(response.data);
+      setStockData(response.data.slice(0, 30)); // Limit to the latest 30 days
       const infoResponse = await axios.get(`http://localhost:5001/api/stock-info?symbol=${symbol}`);
       setStockInfo(infoResponse.data);
     };
@@ -34,13 +34,13 @@ const StockDetail = () => {
         .range([margin.left, width - margin.right]);
 
       const y = d3.scaleLinear()
-        .domain([d3.min(stockData, d => d.close) - 10, d3.max(stockData, d => d.close) + 10])
+        .domain([d3.min(stockData, d => d.close), d3.max(stockData, d => d.close)]).nice()
         .range([height - margin.bottom, margin.top]);
 
       const line = d3.line()
         .x(d => x(new Date(d.timestamp)))
         .y(d => y(d.close))
-        .curve(d3.curveMonotoneX);
+        .curve(d3.curveLinear);
 
       svg.append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`)
@@ -53,37 +53,58 @@ const StockDetail = () => {
       svg.append("path")
         .datum(stockData)
         .attr("fill", "none")
-        .attr("stroke", "steelblue")
+        .attr("stroke", "green")
         .attr("stroke-width", 1.5)
         .attr("d", line);
 
-      const tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
+      const focus = svg.append("g")
+        .attr("class", "focus")
+        .style("display", "none");
 
-      svg.selectAll("dot")
-        .data(stockData)
-        .enter().append("circle")
+      focus.append("circle")
         .attr("r", 5)
-        .attr("cx", d => x(new Date(d.timestamp)))
-        .attr("cy", d => y(d.close))
-        .attr("fill", "steelblue")
-        .on("mouseover", (event, d) => {
-          tooltip.transition().duration(200).style("opacity", .9);
-          tooltip.html(`Date: ${d3.timeFormat("%b %d, %Y")(new Date(d.timestamp))}<br/>Price: $${d.close}`)
-            .style("left", (event.pageX + 5) + "px")
-            .style("top", (event.pageY - 28) + "px");
-        })
-        .on("mouseout", d => {
-          tooltip.transition().duration(500).style("opacity", 0);
-        });
+        .attr("fill", "green");
+
+      focus.append("line")
+        .attr("class", "x-hover-line hover-line")
+        .attr("stroke", "green")
+        .attr("stroke-dasharray", "3,3")
+        .attr("y1", 0)
+        .attr("y2", height - margin.bottom);
+
+      focus.append("text")
+        .attr("x", 15)
+        .attr("dy", ".31em");
+
+      const overlay = svg.append("rect")
+        .attr("class", "overlay")
+        .attr("fill", "none")
+        .attr("pointer-events", "all")
+        .attr("width", width)
+        .attr("height", height)
+        .on("mouseover", () => focus.style("display", null))
+        .on("mouseout", () => focus.style("display", "none"))
+        .on("mousemove", mousemove);
+
+      const bisectDate = d3.bisector(d => new Date(d.timestamp)).left;
+
+      function mousemove(event) {
+        const x0 = x.invert(d3.pointer(event, this)[0]);
+        const i = bisectDate(stockData, x0, 1);
+        const d0 = stockData[i - 1];
+        const d1 = stockData[i];
+        const d = !d1 || x0 - new Date(d0.timestamp) > new Date(d1.timestamp) - x0 ? d0 : d1;
+        focus.attr("transform", `translate(${x(new Date(d.timestamp))},${y(d.close)})`);
+        focus.select("text").text(`$${d.close.toFixed(2)} USD, ${d3.timeFormat("%a, %b %d")(new Date(d.timestamp))}`);
+        focus.select(".x-hover-line").attr("y2", height - y(d.close) - margin.bottom);
+      }
     }
   }, [stockData]);
 
   return (
     <div>
       <h1>{symbol} Stock Details</h1>
-      <svg id="chart" width="100%" height="500px"></svg>
+      <svg id="chart"></svg>
       <div>
         <h2>Stock Information</h2>
         <p>Open: {stockInfo.open}</p>
