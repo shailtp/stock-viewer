@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-const API_KEY = 'XXKMVP3YL87DTLPE';
+const API_KEY = 'TOB5L935J6VGQAO8';
 
 // Load tickers data
 const nasdaqTickers = JSON.parse(fs.readFileSync(path.join(__dirname, 'nasdaq_full_tickers.json')));
@@ -23,7 +23,7 @@ app.get('/api/search-tickers', (req, res) => {
   const filteredTickers = allTickers.filter(ticker =>
     ticker.symbol.toLowerCase().includes(query) || ticker.name.toLowerCase().includes(query)
   );
-  res.json(filteredTickers.slice(0, 100)); // Limit to top 10 results
+  res.json(filteredTickers.slice(0, 100)); // Limit to top 100 results
 });
 
 // Endpoint to fetch stock data
@@ -57,7 +57,8 @@ app.get('/api/stocks', async (req, res) => {
       low: parseFloat(data[key]['3. low']),
       close: parseFloat(data[key]['4. close']),
       volume: parseInt(data[key]['5. volume'])
-    }));
+    })).slice(0, 30); // Limit to latest 30 days
+
     res.json(formattedData);
   } catch (error) {
     console.error('Error fetching stock data:', error.message);

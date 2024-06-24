@@ -20,7 +20,6 @@ const StockDetail = () => {
     fetchStockData();
   }, [symbol]);
 
-
   useEffect(() => {
     if (stockData.length > 0) {
       const svg = d3.select("#chart");
@@ -35,17 +34,17 @@ const StockDetail = () => {
         .range([margin.left, width - margin.right]);
 
       const y = d3.scaleLinear()
-        .domain([0, d3.max(stockData, d => d.close)]).nice()
+        .domain([d3.min(stockData, d => d.close) - 10, d3.max(stockData, d => d.close) + 10])
         .range([height - margin.bottom, margin.top]);
 
       const line = d3.line()
         .x(d => x(new Date(d.timestamp)))
         .y(d => y(d.close))
-        .curve(d3.curveLinear);
+        .curve(d3.curveMonotoneX);
 
       svg.append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y-%m-%d")));
+        .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b %d")));
 
       svg.append("g")
         .attr("transform", `translate(${margin.left},0)`)
@@ -57,13 +56,34 @@ const StockDetail = () => {
         .attr("stroke", "steelblue")
         .attr("stroke-width", 1.5)
         .attr("d", line);
+
+      const tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+      svg.selectAll("dot")
+        .data(stockData)
+        .enter().append("circle")
+        .attr("r", 5)
+        .attr("cx", d => x(new Date(d.timestamp)))
+        .attr("cy", d => y(d.close))
+        .attr("fill", "steelblue")
+        .on("mouseover", (event, d) => {
+          tooltip.transition().duration(200).style("opacity", .9);
+          tooltip.html(`Date: ${d3.timeFormat("%b %d, %Y")(new Date(d.timestamp))}<br/>Price: $${d.close}`)
+            .style("left", (event.pageX + 5) + "px")
+            .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", d => {
+          tooltip.transition().duration(500).style("opacity", 0);
+        });
     }
   }, [stockData]);
 
   return (
     <div>
       <h1>{symbol} Stock Details</h1>
-      <svg id="chart"></svg>
+      <svg id="chart" width="100%" height="500px"></svg>
       <div>
         <h2>Stock Information</h2>
         <p>Open: {stockInfo.open}</p>
