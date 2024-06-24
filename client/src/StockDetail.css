@@ -12,11 +12,6 @@
   fill: green;
 }
 
-.focus line {
-  stroke: green;
-  stroke-dasharray: 3,3;
-}
-
 .focus text {
   background: white;
   border: 1px solid green;

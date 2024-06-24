@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-const API_KEY = 'TOB5L935J6VGQAO8';
+const API_KEY = 'OW4D70D1ABXY1EXP';
 
 // Load tickers data
 const nasdaqTickers = JSON.parse(fs.readFileSync(path.join(__dirname, 'nasdaq_full_tickers.json')));

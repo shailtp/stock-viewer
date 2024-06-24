@@ -7,14 +7,11 @@ import { useParams } from 'react-router-dom';
 const StockDetail = () => {
   const { symbol } = useParams();
   const [stockData, setStockData] = useState([]);
-  const [stockInfo, setStockInfo] = useState({});
 
   useEffect(() => {
     const fetchStockData = async () => {
       const response = await axios.get(`http://localhost:5001/api/stocks?symbol=${symbol}`);
       setStockData(response.data.slice(0, 30)); // Limit to the latest 30 days
-      const infoResponse = await axios.get(`http://localhost:5001/api/stock-info?symbol=${symbol}`);
-      setStockInfo(infoResponse.data);
     };
 
     fetchStockData();
@@ -65,13 +62,6 @@ const StockDetail = () => {
         .attr("r", 5)
         .attr("fill", "green");
 
-      focus.append("line")
-        .attr("class", "x-hover-line hover-line")
-        .attr("stroke", "green")
-        .attr("stroke-dasharray", "3,3")
-        .attr("y1", 0)
-        .attr("y2", height - margin.bottom);
-
       focus.append("text")
         .attr("x", 15)
         .attr("dy", ".31em");
@@ -96,7 +86,6 @@ const StockDetail = () => {
         const d = !d1 || x0 - new Date(d0.timestamp) > new Date(d1.timestamp) - x0 ? d0 : d1;
         focus.attr("transform", `translate(${x(new Date(d.timestamp))},${y(d.close)})`);
         focus.select("text").text(`$${d.close.toFixed(2)} USD, ${d3.timeFormat("%a, %b %d")(new Date(d.timestamp))}`);
-        focus.select(".x-hover-line").attr("y2", height - y(d.close) - margin.bottom);
       }
     }
   }, [stockData]);
@@ -105,18 +94,6 @@ const StockDetail = () => {
     <div>
       <h1>{symbol} Stock Details</h1>
       <svg id="chart"></svg>
-      <div>
-        <h2>Stock Information</h2>
-        <p>Open: {stockInfo.open}</p>
-        <p>Highest: {stockInfo.high}</p>
-        <p>Low: {stockInfo.low}</p>
-        <p>Mkt Cap: {stockInfo.marketCap}</p>
-        <p>P/E Ratio: {stockInfo.peRatio}</p>
-        <p>Div Yield: {stockInfo.dividendYield}</p>
-        <p>CDP Score: {stockInfo.cdpScore}</p>
-        <p>52-wk High: {stockInfo.week52High}</p>
-        <p>52-wk Low: {stockInfo.week52Low}</p>
-      </div>
     </div>
   );
 };
