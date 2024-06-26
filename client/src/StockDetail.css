@@ -22,3 +22,7 @@ canvas {
   border-radius: 5px;
   padding: 5px;
 }
+
+.chartjs-dotted-line {
+  border-style: dotted;
+}

@@ -14,7 +14,7 @@ const StockDetail = () => {
   useEffect(() => {
     const fetchStockData = async () => {
       const response = await axios.get(`http://localhost:5001/api/stocks?symbol=${symbol}`);
-      setStockData(response.data.slice(0, 30)); // Limit to the latest 30 days
+      setStockData(response.data.slice(0, 30).reverse()); // Limit to the latest 30 days and reverse the order
     };
 
     fetchStockData();
@@ -57,7 +57,7 @@ const StockDetail = () => {
           label: function (context) {
             const date = context.label;
             const price = context.raw;
-            return `${symbol}, ${date}: $${price.toFixed(2)}`;
+            return `${symbol}, ${date}\nPrice: $${price.toFixed(2)}`;
           },
         },
       },
@@ -67,8 +67,8 @@ const StockDetail = () => {
       intersect: false,
     },
     hover: {
-      mode: 'nearest',
-      intersect: true,
+      mode: 'index',
+      intersect: false,
     },
   };
 
