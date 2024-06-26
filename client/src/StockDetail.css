@@ -12,9 +12,24 @@
   fill: green;
 }
 
-.focus text {
+.focus line {
+  stroke: green;
+  stroke-dasharray: 3,3;
+}
+
+.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 140px;
+  height: 50px;
+  padding: 2px;
+  font: 12px sans-serif;
   background: white;
   border: 1px solid green;
   border-radius: 5px;
-  padding: 2px;
+  pointer-events: none;
+}
+
+.dot {
+  stroke: #000;
 }

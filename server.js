@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-const API_KEY = 'OW4D70D1ABXY1EXP';
+const API_KEY = 'TOB5L935J6VGQAO8';
 
 // Load tickers data
 const nasdaqTickers = JSON.parse(fs.readFileSync(path.join(__dirname, 'nasdaq_full_tickers.json')));
@@ -98,8 +98,7 @@ app.get('/api/top-performers', async (req, res) => {
     { name: 'MSFT', priceChange: 8 },
     { name: 'GOOGL', priceChange: 7 },
     { name: 'AMZN', priceChange: 6 },
-    { name: 'TSLA', priceChange: 5 },
-    { name: 'TSLA', priceChange: 10}
+    { name: 'TSLA', priceChange: 5 }
   ];
   res.json(topPerformers);
 });
@@ -112,8 +111,7 @@ app.get('/api/biggest-market-cap', async (req, res) => {
     { name: 'MSFT', marketCap: 1800 },
     { name: 'GOOGL', marketCap: 1500 },
     { name: 'AMZN', marketCap: 1400 },
-    { name: 'TSLA', marketCap: 1000 },
-    { name: 'NVDA', marketCap: 3100}
+    { name: 'TSLA', marketCap: 1000 }
   ];
   res.json(biggestMarketCap);
 });

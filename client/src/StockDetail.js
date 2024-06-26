@@ -54,6 +54,34 @@ const StockDetail = () => {
         .attr("stroke-width", 1.5)
         .attr("d", line);
 
+      svg.selectAll(".dot")
+        .data(stockData)
+        .enter().append("circle")
+        .attr("class", "dot")
+        .attr("cx", d => x(new Date(d.timestamp)))
+        .attr("cy", d => y(d.close))
+        .attr("r", 5)
+        .attr("fill", "green")
+        .on("mouseover", function(event, d) {
+          d3.select(this).attr("r", 7).attr("fill", "white");
+          tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+          tooltip.html(`${symbol}, ${d3.timeFormat("%m/%d/%Y")(new Date(d.timestamp))}<br/>Price: $${d.close}`)
+            .style("left", (event.pageX) + "px")
+            .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(d) {
+          d3.select(this).attr("r", 5).attr("fill", "green");
+          tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+        });
+
+      const tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
       const focus = svg.append("g")
         .attr("class", "focus")
         .style("display", "none");
@@ -62,11 +90,18 @@ const StockDetail = () => {
         .attr("r", 5)
         .attr("fill", "green");
 
+      focus.append("line")
+        .attr("class", "x-hover-line hover-line")
+        .attr("stroke", "green")
+        .attr("stroke-dasharray", "3,3")
+        .attr("y1", 0)
+        .attr("y2", height - margin.bottom);
+
       focus.append("text")
         .attr("x", 15)
         .attr("dy", ".31em");
 
-      const overlay = svg.append("rect")
+      svg.append("rect")
         .attr("class", "overlay")
         .attr("fill", "none")
         .attr("pointer-events", "all")
@@ -85,10 +120,15 @@ const StockDetail = () => {
         const d1 = stockData[i];
         const d = !d1 || x0 - new Date(d0.timestamp) > new Date(d1.timestamp) - x0 ? d0 : d1;
         focus.attr("transform", `translate(${x(new Date(d.timestamp))},${y(d.close)})`);
-        focus.select("text").text(`$${d.close.toFixed(2)} USD, ${d3.timeFormat("%a, %b %d")(new Date(d.timestamp))}`);
+        focus.select("text").text(`${symbol}, ${d3.timeFormat("%m/%d/%Y")(new Date(d.timestamp))}`)
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", "1.2em")
+          .text(`Price: $${d.close.toFixed(2)}`);
+        focus.select(".x-hover-line").attr("y2", height - y(d.close) - margin.bottom);
       }
     }
-  }, [stockData]);
+  }, [stockData, symbol]);
 
   return (
     <div>
