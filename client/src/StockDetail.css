@@ -1,14 +1,26 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
 .stock-detail {
   color: white;
   text-align: center;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* This ensures the container takes the full height of the viewport */
 }
 
 .chart-container {
   position: relative;
   height: 500px;
-  width: 100%;
-  margin: 0 auto;
+  width: 80%; /* Adjust the width as necessary */
+  max-width: 1200px; /* Ensures it doesn't get too wide */
+  margin: 0 auto; /* Centering */
 }
 
 canvas {
