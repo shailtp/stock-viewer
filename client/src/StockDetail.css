@@ -38,3 +38,21 @@ canvas {
 .chartjs-dotted-line {
   border-style: dotted;
 }
+
+.time-range-buttons {
+  margin-bottom: 20px;
+}
+
+.time-range-buttons button {
+  background-color: black;
+  color: white;
+  border: 1px solid green;
+  margin: 0 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.time-range-buttons button.active {
+  background-color: green;
+  color: black;
+}

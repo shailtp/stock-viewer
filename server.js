@@ -26,9 +26,40 @@ app.get('/api/search-tickers', (req, res) => {
   res.json(filteredTickers.slice(0, 100)); // Limit to top 100 results
 });
 
+// Function to get the date range for fetching stock data
+const getDateRange = (range) => {
+  const endDate = new Date();
+  let startDate;
+  switch (range) {
+    case '1D':
+      startDate = new Date(endDate);
+      startDate.setDate(endDate.getDate() - 1);
+      break;
+    case '1M':
+      startDate = new Date(endDate);
+      startDate.setMonth(endDate.getMonth() - 1);
+      break;
+    case '1Y':
+      startDate = new Date(endDate);
+      startDate.setFullYear(endDate.getFullYear() - 1);
+      break;
+    case '5Y':
+      startDate = new Date(endDate);
+      startDate.setFullYear(endDate.getFullYear() - 5);
+      break;
+    default:
+      startDate = new Date(endDate);
+      startDate.setMonth(endDate.getMonth() - 1);
+  }
+  return { startDate, endDate };
+};
+
 // Endpoint to fetch stock data
 app.get('/api/stocks', async (req, res) => {
   const symbol = req.query.symbol || 'AAPL';
+  const range = req.query.range || '1M';
+  const { startDate, endDate } = getDateRange(range);
+
   try {
     const response = await axios.get('https://www.alphavantage.co/query', {
       params: {
@@ -50,14 +81,17 @@ app.get('/api/stocks', async (req, res) => {
       return res.status(500).send('No data returned');
     }
 
-    const formattedData = Object.keys(data).map(key => ({
-      timestamp: key,
-      open: parseFloat(data[key]['1. open']),
-      high: parseFloat(data[key]['2. high']),
-      low: parseFloat(data[key]['3. low']),
-      close: parseFloat(data[key]['4. close']),
-      volume: parseInt(data[key]['5. volume'])
-    })).slice(0, 30); // Limit to latest 30 days
+    const formattedData = Object.keys(data)
+      .map(key => ({
+        timestamp: key,
+        open: parseFloat(data[key]['1. open']),
+        high: parseFloat(data[key]['2. high']),
+        low: parseFloat(data[key]['3. low']),
+        close: parseFloat(data[key]['4. close']),
+        volume: parseInt(data[key]['5. volume'])
+      }))
+      .filter(d => new Date(d.timestamp) >= startDate && new Date(d.timestamp) <= endDate)
+      .reverse(); // Ensure the latest date is last
 
     res.json(formattedData);
   } catch (error) {

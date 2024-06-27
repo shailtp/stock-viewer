@@ -10,15 +10,21 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const StockDetail = () => {
   const { symbol } = useParams();
   const [stockData, setStockData] = useState([]);
+  const [timeRange, setTimeRange] = useState('1M'); // Default time range
+
+  const fetchData = async (range) => {
+    const response = await axios.get(`http://localhost:5001/api/stocks`, {
+      params: {
+        symbol,
+        range
+      }
+    });
+    setStockData(response.data);
+  };
 
   useEffect(() => {
-    const fetchStockData = async () => {
-      const response = await axios.get(`http://localhost:5001/api/stocks?symbol=${symbol}`);
-      setStockData(response.data.slice(0, 30).reverse()); // Limit to the latest 30 days and reverse the order
-    };
-
-    fetchStockData();
-  }, [symbol]);
+    fetchData(timeRange);
+  }, [symbol, timeRange]);
 
   const data = {
     labels: stockData.map(d => new Date(d.timestamp).toLocaleDateString()),
@@ -42,6 +48,7 @@ const StockDetail = () => {
           display: true,
           text: 'Date',
         },
+        reverse: true // Reverse the x-axis to have the latest date at the end
       },
       y: {
         display: true,
@@ -75,6 +82,17 @@ const StockDetail = () => {
   return (
     <div className="stock-detail">
       <h1>{symbol} Stock Details</h1>
+      <div className="time-range-buttons">
+        {['1D', '1M', '1Y', '5Y'].map(range => (
+          <button
+            key={range}
+            onClick={() => setTimeRange(range)}
+            className={timeRange === range ? 'active' : ''}
+          >
+            {range}
+          </button>
+        ))}
+      </div>
       <div className="chart-container">
         <Line data={data} options={options} />
       </div>
