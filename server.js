@@ -31,10 +31,6 @@ const getDateRange = (range) => {
   const endDate = new Date();
   let startDate;
   switch (range) {
-    case '1D':
-      startDate = new Date(endDate);
-      startDate.setDate(endDate.getDate() - 1);
-      break;
     case '1M':
       startDate = new Date(endDate);
       startDate.setMonth(endDate.getMonth() - 1);
