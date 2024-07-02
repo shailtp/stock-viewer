@@ -83,7 +83,7 @@ const StockDetail = () => {
     <div className="stock-detail">
       <h1>{symbol} Stock Details</h1>
       <div className="time-range-buttons">
-        {['1D', '1M', '1Y', '5Y'].map(range => (
+        {['1M', '1Y', '5Y'].map(range => (
           <button
             key={range}
             onClick={() => setTimeRange(range)}
