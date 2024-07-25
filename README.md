@@ -4,7 +4,7 @@ To run:
 
 clone this repo, go to root of project in editor.
 
-backend: npm start
+backend: npm start "\n"
 frontend: cd client
           npm start
 
