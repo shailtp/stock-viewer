@@ -4,9 +4,8 @@ To run:
 
 clone this repo, go to root of project in editor.
 
-backend: npm start "\n"
-frontend: cd client
-          npm start
+to run backend: npm start;
+to run frontend: 1. cd client 2. npm start
 
 
 <img width="1470" alt="Screenshot 2024-07-24 at 3 51 10 PM" src="https://github.com/user-attachments/assets/b7009533-120c-47ac-931d-4a6f8ff08018">
